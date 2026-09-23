@@ -19,6 +19,7 @@ export async function POST(request: Request) {
       },
     });
 
+    
     await transporter.sendMail({
       from: process.env.SMTP_FROM,
       to: process.env.NOTIFICATION_EMAIL,
